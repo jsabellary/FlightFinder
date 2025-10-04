@@ -81,7 +81,7 @@ body {
 
 #search-area {
     flex: initial;
-    background: linear-gradient(135deg, #cb60b3 0%, #c146a1 30%, #a80077 85%, #db36a4 100%);
+    background: linear-gradient(135deg, #6068cb 0%, #466bc1 30%, #2775d5 85%, #3698db 100%);
 
     select {
         background-color: rgba(0, 0, 0, 0.15);
@@ -211,11 +211,11 @@ body {
     }
 
     button {
-        background-color: #9d136d;
+        background-color: #139d6a;
         color: white;
 
         &:hover, &:active {
-            background-color: #e558b4;
+            background-color: #51f01d;
         }
     }
 
@@ -244,8 +244,8 @@ body {
     }
 
     ul.mb-4 li:first-child {
-        background-color: #9d136d;
-        border-color: #9d136d;
+        background-color: #429d13;
+        border-color: #689d13;
         color: white;
         position: relative;
     }
@@ -278,7 +278,7 @@ body {
     }
 
     button {
-        background-color: #9d136d;
+        background-color: #139d7d;
         color: white;
         margin-left: 12px;
 
