@@ -7,6 +7,7 @@ on:
       - 'FlightFinder.Server/**'
       - 'FlightFinder.Shared/**'
       - '.github/workflows/server-deploy.yml'
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -25,7 +26,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Restore
         run: dotnet restore "FlightFinder.Server/FlightFinder.Server.csproj"
