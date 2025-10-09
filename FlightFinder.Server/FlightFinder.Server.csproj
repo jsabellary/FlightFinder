@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FlightFinder.Client\FlightFinder.Client.csproj" />
     <ProjectReference Include="..\FlightFinder.Shared\FlightFinder.Shared.csproj" />
   </ItemGroup>
 
