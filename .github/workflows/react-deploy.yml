@@ -1,0 +1,65 @@
+name: Deploy React to S3 + CloudFront
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'FlightFinder.React/**'
+      - '.github/workflows/react-deploy.yml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      # Provide in repo secrets
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+      VITE_API_BASE: ${{ secrets.VITE_API_BASE }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: GitHubActionsReactDeploy
+        if: ${{ secrets.AWS_ROLE_ARN != '' }}
+
+      - name: Configure AWS Credentials (access keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        if: ${{ secrets.AWS_ROLE_ARN == '' }}
+
+      - name: Install dependencies
+        working-directory: FlightFinder.React
+        run: npm ci
+
+      - name: Build React (prod)
+        working-directory: FlightFinder.React
+        run: |
+          echo "VITE_API_BASE=${VITE_API_BASE}" > .env.production
+          npm run build
+
+      - name: Sync to S3
+        run: |
+          aws s3 sync "FlightFinder.React/dist" "s3://${S3_BUCKET}" --delete --cache-control max-age=31536000,public --exclude "index.html"
+          aws s3 cp "FlightFinder.React/dist/index.html" "s3://${S3_BUCKET}/index.html" --cache-control no-cache,public --content-type text/html
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths "/*"
+        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
