@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace FlightFinder.Server.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
-    public class FlightSearchController
+    public class FlightSearchController : ControllerBase
     {
+        [HttpPost]
         public async Task<IEnumerable<Itinerary>> Search([FromBody] SearchCriteria criteria)
         {
-            await Task.Delay(500); // Gotta look busy...
+            await Task.Delay(500); // Simulate work
 
             var rng = new Random();
             return Enumerable.Range(0, rng.Next(1, 5)).Select(_ => new Itinerary
