@@ -7,7 +7,6 @@ on:
       - 'FlightFinder.Server/**'
       - 'FlightFinder.Shared/**'
       - '.github/workflows/server-deploy.yml'
-  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -60,7 +59,7 @@ jobs:
 
       - name: Deploy to EB
         run: |
-          eb init "${{ env.EB_APP }}" --region "${{ env.AWS_REGION }}" --platform ".NET Core on Linux"
+          eb init "${{ env.EB_APP }}" --region "${{ env.AWS_REGION }}" --platform ".NET on Amazon Linux 2023"
           eb use "${{ env.EB_ENV }}"
           eb deploy --staged
         env:
